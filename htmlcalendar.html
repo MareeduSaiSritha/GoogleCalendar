@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Calendar Automation Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Google Calendar Automation Tool</h1>
+    <button class="button" onclick="fetchEvents()">Fetch Calendar Events</button>
+    <button class="button" onclick="sendReminderEmails()">Send Reminder Emails</button>
+    <div class="result" id="result"></div>
+
+    <script>
+        function fetchEvents() {
+            fetch('http://127.0.0.1:5000/events')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                var i;
+                var res=[];
+                for(i=0;i<data.length;i++)
+                {
+                    console.log(data[i]['summary']);
+                    res.push(data[i]['summary']);
+                }
+                document.getElementById('result').innerHTML = '<pre>' + res + '</pre>';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function sendReminderEmails() {
+            fetch('http://127.0.0.1:5000/send_reminder_emails', {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerHTML = data.message;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
